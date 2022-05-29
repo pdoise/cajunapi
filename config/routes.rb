@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  root 'welcome#index'
+
   resources :recipes
   resources :users
+
+  # Keep at bottom of this file
+  get '*other', to: 'static#index'
 end
