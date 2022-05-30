@@ -8,7 +8,8 @@ jana = User.create(username: "Jana Ledet")
 Recipe.create([{ 
   user: phil,
   name: "Chicken and Sausage Jambalaya", 
-  ingredients: "Serving size: 6
+  ingredients: "
+  Serving size: 6
   1 lbs smoked sausage sliced to 1/4 inch rounds
   1 lbs chicken breast strips cubed
   1 white onion chopped
@@ -22,12 +23,12 @@ Recipe.create([{
   2 tsp Crab boil (not the liquid kind)
   olive oil",
   directions: "
-  1. Season sausage, chicken, onions and garlic with salt, pepper and cayenne pepper
-  2. Coat bottom of a cast iron pot with olive oil and set stove to med high
-  3. Cook onions and garlic until onions are turn clear. Then remove from pot.
-  4. Add chicken and lightly cook (will finish cooking during boil). The remove from pot.
-  5. Cook sausage then put chicken and vegetables back in pot and add broth, rice, tomato sauce, crab boil and add salt to taste.
-  6. Bring to boil then set to low heat, cover pot and let sit for 30 to 40 mins until rice is cooked" 
+  Season sausage, chicken, onions and garlic with salt, pepper and cayenne pepper
+  Coat bottom of a cast iron pot with olive oil and set stove to med high
+  Cook onions and garlic until onions are turn clear. Then remove from pot.
+  Add chicken and lightly cook (will finish cooking during boil). The remove from pot.
+  Cook sausage then put chicken and vegetables back in pot and add broth, rice, tomato sauce, crab boil and add salt to taste.
+  Bring to boil then set to low heat, cover pot and let sit for 30 to 40 mins until rice is cooked" 
 },{  
   user: phil,
   name: "Crawfish Fettuccine", 

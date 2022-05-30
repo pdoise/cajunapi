@@ -7,7 +7,11 @@
 # Read more: https://github.com/cyu/rack-cors
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins '*'
+    if Rails.env.development?
+      origins 'localhost:3000', 'localhost:4200'
+    else
+      origins 'https://cajun-cookbook.herokuapp.com/'
+    end
 
     resource '*',
       headers: :any,
