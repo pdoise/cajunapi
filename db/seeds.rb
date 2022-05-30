@@ -9,7 +9,6 @@ Recipe.create([{
   user: phil,
   name: "Chicken and Sausage Jambalaya", 
   ingredients: "Serving size: 6
-  Ingredients:
   1 lbs smoked sausage sliced to 1/4 inch rounds
   1 lbs chicken breast strips cubed
   1 white onion chopped
@@ -32,7 +31,7 @@ Recipe.create([{
 },{  
   user: phil,
   name: "Crawfish Fettuccine", 
-  ingredients: "Ingredients:
+  ingredients: "
   1 stick of butter
   1 onion chopped
   1 bell pepper chopped
@@ -60,7 +59,7 @@ Recipe.create([{
 },{ 
   user: phil,
   name: "Crawfish Etouffee",
-  ingredients: "Ingredients:
+  ingredients: "
   1/2 an onion chopped
   1/2 a bell pepper chopped
   few sticks of celery chopped
@@ -81,7 +80,7 @@ Recipe.create([{
 },{
   user: jana,
   name: "La Casa Salsa", 
-  ingredients: "Ingredients:
+  ingredients: "
   Olive oil
   1 bunch of green onions
   1 tsp minced garlic
