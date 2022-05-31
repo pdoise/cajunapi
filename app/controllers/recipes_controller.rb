@@ -11,7 +11,9 @@ class RecipesController < ApplicationController
   end
 
   def create
+    user = User.find_by_email('p.doise@gmail.com')
     @recipe = Recipe.create(
+      user_id:     user.id             , 
       name:        params[:name]       , 
       description: params[:description], 
       ingredients: params[:ingredients], 
