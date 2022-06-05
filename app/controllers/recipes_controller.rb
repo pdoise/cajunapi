@@ -1,4 +1,7 @@
 class RecipesController < ApplicationController
+  include ActiveStorage::SetCurrent
+
+  before_action :get_recipe, except: [:index, :create]
 
   def index
     @recipes = Recipe.all 
@@ -6,8 +9,7 @@ class RecipesController < ApplicationController
   end
   
   def show
-    @recipe = Recipe.find(params[:id])
-    render json: @recipe.as_json(include: :image, include: :user)
+    render json: @recipe.attributes.merge!(:user => @recipe.user, :image => @recipe.image)
   end
 
   def create
@@ -17,18 +19,28 @@ class RecipesController < ApplicationController
   end
 
   def update
-    @recipe = Recipe.find(params[:id])
     @recipe.update(recipe_params)
-    render json: @recipe
+    render json: @recipe.attributes.merge!(:user => @recipe.user, :image => @recipe.image)
   end
 
   def destroy
-    @recipe = Recipe.find(params[:id])
     @recipe.destroy
   end
 
+  def image
+    if @recipe&.image&.attached?
+      render json: rails_blob_url(recipe.image, only_path: true)
+    else
+      head :not_found
+    end
+  end
+
   def recipe_params
-    params.permit(:user_id, :name, :description, :ingredients, :directions, :imgsrc, :rating, :cooktime, :image)
+    params.permit(:user_id, :name, :description, :ingredients, :directions, :rating, :cooktime, :image)
+  end
+
+  def get_recipe
+    @recipe = Recipe.find(params[:id])
   end
 
 end 
