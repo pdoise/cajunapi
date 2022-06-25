@@ -1,7 +1,7 @@
 class RecipesController < ApplicationController
   include ActiveStorage::SetCurrent
 
-  before_action :get_recipe, except: [:index, :create, :image]
+  before_action :get_recipe, except: [:index, :create]
 
   def index
     @recipes = Recipe.all 
@@ -28,10 +28,16 @@ class RecipesController < ApplicationController
   end
 
   def image
-    puts "*"*1000
-    puts params
-    if @recipe&.image&.attached?
-      render json: rails_blob_url(recipe.image, only_path: true)
+    @recipe.image.attach(params[:image])
+    if @recipe.image.attached?
+      puts @recipe.image.inspect
+      #render json: rails_blob_url(@recipe.image, only_path: true)
+      #rails_blob_path(@recipe.image, disposition: "attachment")
+      #render json: @recipe.attributes.merge!(:user => @recipe.user, :image => @recipe.image)
+
+      puts "*"*1000
+      puts url_for(@recipe.image)
+      render json: url_for(@recipe.image)
     else
       head :not_found
     end
