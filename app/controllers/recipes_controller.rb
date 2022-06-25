@@ -1,7 +1,7 @@
 class RecipesController < ApplicationController
   include ActiveStorage::SetCurrent
 
-  before_action :get_recipe, except: [:index, :create]
+  before_action :get_recipe, except: [:index, :create, :image]
 
   def index
     @recipes = Recipe.all 
@@ -28,6 +28,8 @@ class RecipesController < ApplicationController
   end
 
   def image
+    puts "*"*1000
+    puts params
     if @recipe&.image&.attached?
       render json: rails_blob_url(recipe.image, only_path: true)
     else
@@ -36,7 +38,7 @@ class RecipesController < ApplicationController
   end
 
   def recipe_params
-    params.permit(:user_id, :name, :description, :ingredients, :directions, :rating, :cooktime, :image)
+    params.permit(:user_id, :name, :description, :ingredients, :directions, :rating, :cooktime, image: {})
   end
 
   def get_recipe
