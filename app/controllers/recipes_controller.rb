@@ -7,13 +7,19 @@ class RecipesController < ApplicationController
   
   def show
     @recipe = Recipe.find(params[:id])
-    render json: @recipe.as_json(include: :image, include: :user)
+    data = @recipe.image.download
+    image_data = Base64.strict_encode64(data)
+    render json: { image: { content_type: @recipe.image.content_type, data: image_data.to_s } }
   end
 
   def create
-    user = User.find_by_email('p.doise@gmail.com')
-    @recipe = Recipe.create(recipe_params)
-    render json: @recipe
+    @recipe = Recipe.new(recipe_params)
+    @recipe.image.attach(params[:recipe][:image])
+    if @recipe.save
+      render json: @recipe, status: :created
+    else
+      render json: @recipe.errors, status: :unprocessable_entity
+    end
   end
 
   def update
