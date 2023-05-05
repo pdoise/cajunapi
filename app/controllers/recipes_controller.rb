@@ -7,10 +7,15 @@ class RecipesController < ApplicationController
   
   def show
     @recipe = Recipe.find(params[:id])
-    data = @recipe.image.download
-    image_data = Base64.strict_encode64(data)
-    render json: { image: { content_type: @recipe.image.content_type, data: image_data.to_s } }
+    if @recipe.image.download
+      data = @recipe.image.download
+      image_data = Base64.strict_encode64(data)
+      render json: { recipe: @recipe, image: { content_type: @recipe.image.content_type, data: image_data } }
+    else
+      render json: { recipe: @recipe, image: nil }
+    end
   end
+
 
   def create
     @recipe = Recipe.new(recipe_params)

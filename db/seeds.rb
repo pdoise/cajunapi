@@ -5,7 +5,7 @@ phil = User.create(username: "Phillip Doise", email: "p.doise@gmail.com")
 mike = User.create(username: "Mike Doise")
 jana = User.create(username: "Jana Ledet")
 
-Recipe.create([{ 
+recipes = [{
   user: phil,
   name: "Chicken and Sausage Jambalaya", 
   ingredients: "
@@ -485,4 +485,14 @@ Recipe.create([{
   1. In a medium bowl, blend the whole tomatoes and paste; reserve.
   2. In a large saucepan, warm olive oil over medium‐low heat and add garlic; cook for a few minutes, but make sure to not brown the garlic.
   3. Pour tomato mixture in saucepan and stir; cook over medium heat for 10 minutes. Add parsley, salt and wine; reduce heat to low and simmer, stirring occasionally, until sauce thickens; serve."
-}])
+}]
+
+recipes.each do |recipe_data|
+  recipe = Recipe.new(recipe_data)
+  
+  if recipe.name == "Chicken and Sausage Jambalaya"
+    file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
+    recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
+  end
+  recipe.save!
+end
