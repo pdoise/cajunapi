@@ -10,9 +10,9 @@ class RecipesController < ApplicationController
     if @recipe.image.download
       data = @recipe.image.download
       image_data = Base64.strict_encode64(data)
-      render json: { recipe: @recipe, image: { content_type: @recipe.image.content_type, data: image_data } }
+      render json: @recipe.as_json(include: :user).merge(image: { content_type: @recipe.image.content_type, data: image_data })
     else
-      render json: { recipe: @recipe, image: nil }
+      render json: @recipe.as_json(include: :user)
     end
   end
 
