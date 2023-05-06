@@ -2,7 +2,15 @@ class RecipesController < ApplicationController
 
   def index
     @recipes = Recipe.all 
-    render :json => @recipes.as_json(include: :user)
+    recipes_with_image_data = @recipes.map do |recipe|
+      if recipe.image.attached? && recipe.image.download
+        image_data = Base64.strict_encode64(recipe.image.download)
+        recipe.as_json(include: :user).merge(image: { content_type: recipe.image.content_type, data: image_data })
+      else
+        recipe.as_json(include: :user)
+      end
+    end
+    render json: recipes_with_image_data
   end
   
   def show
@@ -29,6 +37,9 @@ class RecipesController < ApplicationController
 
   def update
     @recipe = Recipe.find(params[:id])
+    if params[:recipe][:image]
+      @recipe.image.attach(params[:recipe][:image])
+    end
     @recipe.update(recipe_params)
     render json: @recipe
   end
