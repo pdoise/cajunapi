@@ -316,7 +316,7 @@ recipes = [{
   7. Serve with remaining glaze on the side."
 },{
   user: mike,
-  name: "Frank's Redhot Buffalo Chicken Wings", 
+  name: "Franks Redhot Buffalo Chicken Wings", 
   ingredients:
   "Servings: 6 to 8 servings
   Prep Time: 10
@@ -454,7 +454,7 @@ recipes = [{
   • *I just crushed the rosemary in the palm of my hand then for the celery seed, I placed it in a ziploc bag and crushed it with the flat side of a meat mallet."
 },{ 
   user: mike,
-  name: "Sweet‐and‐Sour Meatballs",
+  name: "Sweet and Sour Meatballs",
   ingredients:
   "ingredients:
   3/4 pound extra‐lean ground beef or 3/4 pound ground turkey
@@ -490,9 +490,7 @@ recipes = [{
 recipes.each do |recipe_data|
   recipe = Recipe.new(recipe_data)
   
-  if recipe.name == "Chicken and Sausage Jambalaya"
-    file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
-    recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
-  end
+  file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
+  recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
   recipe.save!
 end
