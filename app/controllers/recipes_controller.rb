@@ -1,20 +1,20 @@
 class RecipesController < ApplicationController
 
   def index
-    @recipes = Recipe.all 
+    @recipes = Recipe.includes(:user).with_attached_image.all
     recipes_with_image_data = @recipes.map do |recipe|
       if recipe.image.attached? && recipe.image.download
         image_data = Base64.strict_encode64(recipe.image.download)
-        recipe.as_json(include: :user).merge(image: { content_type: recipe.image.content_type, data: image_data })
+        recipe.as_json(include: { user: { only: :username } }).merge(image: { content_type: recipe.image.content_type, data: image_data })
       else
-        recipe.as_json(include: :user)
+        recipe.as_json(include: { user: { only: :username } })
       end
     end
     render json: recipes_with_image_data
   end
   
   def show
-    @recipe = Recipe.find(params[:id])
+    @recipe = Recipe.includes(:user).with_attached_image.find(params[:id])
     if @recipe.image.attached? && @recipe.image.download
       data = @recipe.image.download
       image_data = Base64.strict_encode64(data)
