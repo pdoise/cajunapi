@@ -4,14 +4,14 @@ class RecipesController < ApplicationController
     @recipes = Recipe.includes(:user).with_attached_image.all
     recipes_data = @recipes.map do |recipe|
       recipe_hash = recipe.as_json(include: { user: { only: :username } })
-      #if recipe.image.attached?
-      #  recipe_hash.merge(image: { 
-      #    content_type: recipe.image.content_type, 
-      #    data: Base64.strict_encode64(recipe.image.download) 
-      #  })
-      #else
-      #  recipe_hash
-      #end
+      if recipe.image.attached?
+        recipe_hash.merge(image: { 
+          content_type: recipe.image.content_type, 
+          data: Base64.strict_encode64(recipe.image.download) 
+        })
+      else
+        recipe_hash
+      end
     end
     render json: recipes_data
   end
