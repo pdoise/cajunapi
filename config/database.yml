@@ -79,8 +79,7 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
-production:
-  <<: *default
-  database: postgres
-  username: cajunapi
-  password: <%= ENV["CAJUNAPI_DATABASE_PASSWORD"] %>
+ production:
+   <<: *default
+   adapter: postgresql
+   database: db/production.sqlite3
