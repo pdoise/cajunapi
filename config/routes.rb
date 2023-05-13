@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :recipes
   resources :users
 
-  # Keep at bottom of this file
-  #get '*other', to: 'static#index'
+  get '*other', to: 'static#index', constraints: lambda { |req|
+    req.path.exclude? 'rails/active_storage'
+  }
 end
