@@ -81,6 +81,6 @@ test:
 #
 production:
   <<: *default
-  database: postgres
+  database: cajunapi_production
   username: cajunapi
   password: <%= ENV["CAJUNAPI_DATABASE_PASSWORD"] %>
