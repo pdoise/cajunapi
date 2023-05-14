@@ -3,7 +3,7 @@ class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :update, :destroy]
 
   def index
-    @recipes = Recipe.with_attached_image.includes(:user)
+    @recipes = Recipe.with_attached_image.includes(:user).order(:id)
     render json: @recipes.map{ |recipe| serialize_recipe(recipe) }
   end
 
