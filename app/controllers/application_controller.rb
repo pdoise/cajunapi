@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
     if @headers['Authorization'].present?
       token = @headers['Authorization'].split(' ').last
       decoded_token = decode(token)
-      @user = User.find_by(id:decoded_token[:user_id])
+      @user = User.find_by(id: decoded_token[:user_id])
       render json:{ error: 'Not Authorized' }, status: 401 unless @user
     else
       render json: { error: 'Not Authorized' }, status: 401
