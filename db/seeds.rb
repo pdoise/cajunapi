@@ -1,9 +1,25 @@
 User.destroy_all
 Recipe.destroy_all
 
-phil = User.create(username: "Phillip Doise", email: "p.doise@gmail.com")
-mike = User.create(username: "Mike Doise")
-jana = User.create(username: "Jana Ledet")
+phil = User.create(
+  username: "blankpage985",
+  name: "Phillip Doise", 
+  email: "p.doise@gmail.com",
+  password: 'password',
+  password_confirmation: 'password'
+)
+mike = User.create(
+  username: "Mike Doise",
+  email: "p.doise@gmail.com",
+  password: 'password',
+  password_confirmation: 'password'
+)
+jana = User.create(
+  username: "Jana Ledet",
+  email: "p.doise@gmail.com",
+  password: 'password',
+  password_confirmation: 'password'
+)
 
 recipes = [{
   user: phil,
@@ -490,7 +506,7 @@ recipes = [{
 recipes.each do |recipe_data|
   recipe = Recipe.new(recipe_data)
   
-  #file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
-  #recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
+  file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
+  recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
   recipe.save!
 end

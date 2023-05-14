@@ -5,7 +5,9 @@
 # Handle Cross-Origin Resource Sharing (CORS) in order to accept
 # cross-origin AJAX requests.
 # Read more: https://github.com/cyu/rack-cors
+
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
+
   allow do
     if Rails.env.development?
       origins 'localhost:3000', 'localhost:4200'
@@ -16,6 +18,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource '*',
       headers: :any,
       expose:  ['access-token', 'expiry', 'token-type', 'uid', 'client'],
-      methods: [:get, :post, :put, :patch, :delete, :options, :head]
+      methods: [:get, :post, :put, :patch, :delete, :options, :head],
+      credentials: true
   end
 end
