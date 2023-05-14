@@ -2,27 +2,29 @@ User.destroy_all
 Recipe.destroy_all
 
 phil = User.create(
-  username: "blankpage985",
-  name: "Phillip Doise", 
+  first: "Phillip",
+  last: "Doise", 
   email: "p.doise@gmail.com",
   password: 'password',
   password_confirmation: 'password'
 )
 mike = User.create(
-  username: "Mike Doise",
-  email: "p.doise@gmail.com",
+  first: "Mike",
+  last: "Doise", 
+  email: "Mike@gmail.com",
   password: 'password',
   password_confirmation: 'password'
 )
 jana = User.create(
-  username: "Jana Ledet",
-  email: "p.doise@gmail.com",
+  first: "Jana",
+  last: "Ledet", 
+  email: "Jana@gmail.com",
   password: 'password',
   password_confirmation: 'password'
 )
 
 recipes = [{
-  user_id: phil,
+  user: phil,
   name: "Chicken and Sausage Jambalaya", 
   ingredients: "
   Serving size: 6

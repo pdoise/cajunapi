@@ -1,13 +1,23 @@
 class AuthenticationController < ApplicationController
   skip_before_action :authorize
+
+  def create
+    user = User.new(user_params)
+    if user.save
+      token = encode(user_id: user.id)
+      render json: { token: token, user: user }
+    else
+      render json: { error_message: user.errors.full_messages.join(", ") }, status: :bad_request
+    end
+  end
   
   def authenticate
-    user = User.find_by(username: params[:username])
+    user = User.find_by(email: params[:email])
     if user && user.authenticate(params[:password])
       token = encode(user_id: user.id)
       render json: { token: token, user:user }
     else
-      render json: { error:"Incorrect user name or password" }, status: :unauthorized
+      render json: { error_message:"Incorrect email or password." }, status: :unauthorized
     end
   end
 
@@ -22,5 +32,9 @@ class AuthenticationController < ApplicationController
       end
     end
     render json: { message: 'No token found' }, status: :ok
+  end
+
+  def user_params
+    params.require(:user).permit(:first, :last, :email, :location, :password, :password_confirmation)
   end
 end

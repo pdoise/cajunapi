@@ -38,14 +38,14 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  def user_params
-    params.permit(:name, :username, :avatar, :location, :email, :password)
-  end
-
   def serialize_recipe(recipe)
-    recipe_hash = recipe.as_json(include: { user: { only: :username } })
+    recipe_hash = recipe.as_json(include: { user: { only: [:first, :last] } })
     recipe_hash[:image_url] = url_for(recipe.image) if recipe.image.attached?
     recipe_hash
+  end
+
+  def user_params
+    params.require(:user).params.permit(:first, :last, :avatar, :location, :email, :password, :password_confirmation)
   end
 
 end

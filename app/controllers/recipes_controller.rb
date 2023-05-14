@@ -60,9 +60,9 @@ class RecipesController < ApplicationController
       render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
-
+  
   def serialize_recipe(recipe)
-    recipe_hash = recipe.as_json(include: { user: { only: :username } })
+    recipe_hash = recipe.as_json(include: { user: { only: [:first, :last] } })
     recipe_hash[:image_url] = url_for(recipe.image) if recipe.image.attached?
     recipe_hash
   end
