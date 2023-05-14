@@ -1,9 +1,15 @@
 class RecipesController < ApplicationController
-  before_action :set_recipe, only: [:show, :update, :destroy]
   skip_before_action :authorize, only: [:index, :show]
+  before_action :get_user, only: [:index, :create]
+  before_action :get_recipe, only: [:show, :update, :destroy]
+  before_action :authorize_user, only: [:update, :destroy]
 
   def index
-    @recipes = Recipe.with_attached_image.includes(:user).order(:id)
+    if params[:user_id].present?
+      @recipes = @user.recipes.with_attached_image.includes(:user).order(:id)
+    else
+      @recipes = Recipe.with_attached_image.includes(:user).order(:id)
+    end
     render json: @recipes.map{ |recipe| serialize_recipe(recipe) }
   end
 
@@ -12,7 +18,7 @@ class RecipesController < ApplicationController
   end
 
   def create
-    @recipe = Recipe.new(recipe_params)
+    @recipe = @user.recipes.build(recipe_params)
 
     if @recipe.save
       @recipe.image.attach(params[:recipe][:image])
@@ -37,8 +43,22 @@ class RecipesController < ApplicationController
 
   private
 
-  def set_recipe
+  def get_user
+    if params[:user_id]
+      @user = User.find(params[:user_id])
+    else
+      @user = nil
+    end
+  end
+
+  def get_recipe
     @recipe = Recipe.with_attached_image.includes(:user).find(params[:id])
+  end
+
+  def authorize_user
+    unless @recipe.user == @user
+      render json: { error: 'Unauthorized' }, status: :unauthorized
+    end
   end
 
   def serialize_recipe(recipe)
@@ -50,5 +70,4 @@ class RecipesController < ApplicationController
   def recipe_params
     params.require(:recipe).permit(:user_id, :name, :description, :ingredients, :directions, :imgsrc, :rating, :cooktime, :image)
   end
-
 end

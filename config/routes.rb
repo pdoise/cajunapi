@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-
-  resources :recipes
-  resources :users
+  resources :users do
+    resources :recipes
+  end
+  
+  get '/recipes', to: 'recipes#index', as: 'all_recipes'
 
   post 'login', to: 'authentication#authenticate'
   get 'logout', to: 'authentication#logout'

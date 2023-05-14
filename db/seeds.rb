@@ -22,7 +22,7 @@ jana = User.create(
 )
 
 recipes = [{
-  user: phil,
+  user_id: phil,
   name: "Chicken and Sausage Jambalaya", 
   ingredients: "
   Serving size: 6

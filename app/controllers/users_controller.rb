@@ -1,5 +1,5 @@
 class UsersController < ApplicationController 
-  skip_before_action :authenticate_user, only: [:create]
+  skip_before_action :authorize, only: [:create]
   before_action :get_user, only: [:show, :update, :destroy]
 
   def index
@@ -39,7 +39,13 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.permit(:name, :username, :location, :email, :password)
+    params.permit(:name, :username, :avatar, :location, :email, :password)
+  end
+
+  def serialize_recipe(recipe)
+    recipe_hash = recipe.as_json(include: { user: { only: :username } })
+    recipe_hash[:image_url] = url_for(recipe.image) if recipe.image.attached?
+    recipe_hash
   end
 
 end
