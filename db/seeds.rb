@@ -508,7 +508,7 @@ recipes = [{
 recipes.each do |recipe_data|
   recipe = Recipe.new(recipe_data)
   
-  file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
-  recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
+  #file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
+  #recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
   recipe.save!
 end
