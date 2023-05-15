@@ -4,11 +4,11 @@ class UsersController < ApplicationController
 
   def index
     @users = User.all
-    render json: @users
+    render json: @users.map{ |user| serialize_user(user) }
   end
 
   def show
-    render json: @ussser
+    render json: serialize_user(@user)
   end
 
   def create
@@ -38,14 +38,14 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  def serialize_recipe(recipe)
-    recipe_hash = recipe.as_json(include: { user: { only: [:first, :last] } })
-    recipe_hash[:image_url] = url_for(recipe.image) if recipe.image.attached?
-    recipe_hash
+  def serialize_user(user)
+    user_hash = user.as_json()
+    user_hash[:image_url] = url_for(user.image) if user.image.attached?
+    user_hash
   end
 
   def user_params
-    params.require(:user).params.permit(:first, :last, :avatar, :location, :email, :password, :password_confirmation)
+    params.require(:user).permit(:first, :last, :avatar, :location, :email, :password, :password_confirmation, :image)
   end
 
 end

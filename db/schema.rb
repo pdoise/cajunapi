@@ -46,7 +46,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_05_031728) do
     t.string "name"
     t.string "description"
     t.string "ingredients"
-    t.string "imgsrc"
     t.string "directions"
     t.integer "rating"
     t.integer "cooktime"

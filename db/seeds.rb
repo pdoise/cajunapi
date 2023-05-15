@@ -5,6 +5,7 @@ phil = User.create(
   first: "Phillip",
   last: "Doise", 
   email: "p.doise@gmail.com",
+  location: "Houma, La",
   password: 'password1',
   password_confirmation: 'password1'
 )
@@ -12,6 +13,7 @@ mike = User.create(
   first: "Mike",
   last: "Doise", 
   email: "Mike@gmail.com",
+  location: "Houma, La",
   password: 'password1',
   password_confirmation: 'password1'
 )
@@ -19,6 +21,7 @@ jana = User.create(
   first: "Jana",
   last: "Ledet", 
   email: "Jana@gmail.com",
+  location: "Houma, La",
   password: 'password1',
   password_confirmation: 'password1'
 )

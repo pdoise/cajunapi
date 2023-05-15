@@ -1,12 +1,11 @@
 class RecipesController < ApplicationController
   skip_before_action :authorize, only: [:index, :show]
-  before_action :get_user, only: [:index, :create]
   before_action :get_recipe, only: [:show, :update, :destroy]
-  before_action :authorize_user, only: [:update, :destroy]
+  before_action :authorized_user, only: [:update, :destroy]
 
   def index
     if params[:user_id].present?
-      @recipes = @user.recipes.with_attached_image.includes(:user).order(:id)
+      @recipes = User.find(params[:user_id]).recipes.with_attached_image.includes(:user).order(:id)
     else
       @recipes = Recipe.with_attached_image.includes(:user).order(:id)
     end
@@ -18,7 +17,7 @@ class RecipesController < ApplicationController
   end
 
   def create
-    @recipe = @user.recipes.build(recipe_params)
+    @recipe = request.env[:current_user].recipes.build(recipe_params)
 
     if @recipe.save
       @recipe.image.attach(params[:recipe][:image])
@@ -43,20 +42,12 @@ class RecipesController < ApplicationController
 
   private
 
-  def get_user
-    if params[:user_id]
-      @user = User.find(params[:user_id])
-    else
-      @user = nil
-    end
-  end
-
   def get_recipe
     @recipe = Recipe.with_attached_image.includes(:user).find(params[:id])
   end
 
-  def authorize_user
-    unless @recipe.user == @user
+  def authorized_user
+    unless @recipe.user #TODO: == current_user
       render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
