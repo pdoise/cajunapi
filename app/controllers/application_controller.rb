@@ -7,7 +7,7 @@ class ApplicationController < ActionController::API
       token = @headers['Authorization'].split(' ').last
       decoded_token = decode(token)
       puts "*"*1000
-      puts decoded_token
+      puts Rails.application.secrets.secret_key_base
       user = User.find_by(id: decoded_token[:user_id])
       render json:{ error: 'Not Authorized' }, status: 401 unless user
     else
