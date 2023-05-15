@@ -1,5 +1,5 @@
 class UsersController < ApplicationController 
-  skip_before_action :authorize, only: [:create]
+  skip_before_action :authorize, only: [:index, :show]
   before_action :get_user, only: [:show, :update, :destroy]
 
   def index
@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    render json: @user
+    render json: @ussser
   end
 
   def create
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
     if @user.save!
       render json: @user
     else
-      render json: { errors: @user.errors.full_messages }, status: 503
+      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     if @user.update(user_params)
       render json: @user
     else
-      render json: { errors: @user.errors.full_messages }, status: 503
+      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
