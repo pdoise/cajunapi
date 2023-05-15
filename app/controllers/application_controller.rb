@@ -17,18 +17,18 @@ class ApplicationController < ActionController::API
    
   private
 
-  def encode(payload, exp = 24.hours.from_now)
+  def encode(payload, exp = 1200.hours.from_now)
    payload[:exp] = exp.to_i
-   JWT.encode(payload, Rails.application.secrets.secret_key_base)
+   JWT.encode(payload, Rails.application.credentials.read)
   end
 
   def decode(token)
     puts 'token'
     puts token
-    body = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]
+    body = JWT.decode(token, Rails.application.credentials.read)[0]
     puts "*"*1000
     puts 'secret key'
-    puts Rails.application.secrets.secret_key_base
+    puts Rails.application.credentials.read
     puts 'body'
     puts body
     puts 'hash' 
