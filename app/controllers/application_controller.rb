@@ -5,6 +5,8 @@ class ApplicationController < ActionController::API
     @headers = request.headers
     if @headers['Authorization'].present?
       token = @headers['Authorization'].split(' ').last
+      puts 'token'
+      puts token
       decoded_token = decode(token)
       user = User.find_by(id: decoded_token[:user_id])
       render json:{ error: 'Not Authorized' }, status: 401 unless user
@@ -21,6 +23,8 @@ class ApplicationController < ActionController::API
   end
 
   def decode(token)
+    puts 'token'
+    puts token
     body = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]
     puts "*"*1000
     puts 'secret key'
