@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   resources :users do
-    resources :recipes
+    resources :recipes do
+      resources :comments, only: [:create, :delete]
+      member do
+        post 'rate'
+      end
+    end
   end
   
   get '/recipes', to: 'recipes#index', as: 'all_recipes'

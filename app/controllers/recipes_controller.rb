@@ -42,6 +42,21 @@ class RecipesController < ApplicationController
     @recipe.destroy
   end
 
+  def rate
+    @recipe = Recipe.find(params[:id])
+    rating = params[:rating].to_i
+  
+    # Calculate the new average rating and update the total ratings
+    @recipe.total_ratings += 1
+    @recipe.average_rating = (@recipe.average_rating * (@recipe.total_ratings - 1) + rating) / @recipe.total_ratings
+  
+    if @recipe.save
+      render json: serialize_recipe(@recipe), status: :ok
+    else
+      render json: @recipe.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def get_recipe
@@ -49,7 +64,7 @@ class RecipesController < ApplicationController
   end
 
   def authorized_user
-    unless @recipe.user #TODO: == current_user
+    unless @recipe.user == current_user
       render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
@@ -61,6 +76,6 @@ class RecipesController < ApplicationController
   end
 
   def recipe_params
-    params.require(:recipe).permit(:user_id, :id, :name, :description, :ingredients, :directions, :imgsrc, :rating, :cooktime, :image)
+    params.require(:recipe).permit(:user_id, :id, :name, :description, :ingredients, :directions, :rating, :cooktime, :image)
   end
 end

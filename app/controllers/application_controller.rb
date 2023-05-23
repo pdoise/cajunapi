@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :authorize
+  attr_reader :current_user
 
   def authorize
     @headers = request.headers
@@ -7,8 +8,8 @@ class ApplicationController < ActionController::API
       token = @headers['Authorization'].split(' ').last
       decoded_token = decode(token)
       if decoded_token && decoded_token[:user_id].present?
-        user = User.find_by(id: decoded_token[:user_id])
-        render json: { error: 'Not Authorized' }, status: 401 unless user
+        @current_user = User.find_by(id: decoded_token[:user_id])
+        render json: { error: 'Not Authorized' }, status: 401 unless @current_user
       else
         render json: { error: 'Not Authorized' }, status: 401
       end

@@ -6,6 +6,8 @@ class CreateRecipes < ActiveRecord::Migration[7.0]
       t.string :ingredients
       t.string :directions
       t.integer :rating
+      t.integer :total_ratings
+      t.float :average_rating
       t.integer :cooktime
 
       t.references :user, null: false, foreign_key:true
