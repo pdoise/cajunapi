@@ -6,6 +6,7 @@ phil = User.create(
   last: "Doise", 
   email: "p.doise@gmail.com",
   location: "Houma, La",
+  bio: "I'm a frontend software architect from southern Louisiana and grew up with Cajun food. I built CajunCookbook as a pet project for myself because I got tired of digging around for recipes in my recipe books and wanted an easy way to access them online.",
   password: 'password1',
   password_confirmation: 'password1'
 )

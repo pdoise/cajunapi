@@ -60,6 +60,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_05_031728) do
     t.string "last"
     t.string "email"
     t.string "location"
+    t.string "bio"
     t.string "avatar"
     t.string "string"
     t.string "password_digest"

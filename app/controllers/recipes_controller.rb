@@ -32,6 +32,8 @@ class RecipesController < ApplicationController
       @recipe.image.attach(params[:recipe][:image]) if params[:recipe][:image]
       render json: serialize_recipe(@recipe), status: :ok
     else
+      puts "*"*1000
+      puts @recipe.errors.full_messages
       render json: @recipe.errors, status: :unprocessable_entity
     end
   end
@@ -59,6 +61,6 @@ class RecipesController < ApplicationController
   end
 
   def recipe_params
-    params.require(:recipe).permit(:user_id, :name, :description, :ingredients, :directions, :imgsrc, :rating, :cooktime, :image)
+    params.require(:recipe).permit(:user_id, :id, :name, :description, :ingredients, :directions, :imgsrc, :rating, :cooktime, :image)
   end
 end
