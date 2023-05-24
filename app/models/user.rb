@@ -2,6 +2,8 @@ class User < ApplicationRecord
   has_secure_password
   has_one_attached :image
   has_many :comments
+  has_many :likes, dependent: :destroy
+  has_many :liked_recipes, through: :likes, source: :recipe
   validates :first, presence: true
   validates :last, presence: true
   validates :email, presence: true, uniqueness: true,

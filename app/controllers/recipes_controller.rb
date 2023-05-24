@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   skip_before_action :authorize, only: [:index, :show]
-  before_action :get_recipe, only: [:show, :update, :destroy]
+  before_action :get_recipe, only: [:show, :update, :destroy, :like, :unlike]
   before_action :authorized_user, only: [:update, :destroy]
 
   def index
@@ -32,8 +32,6 @@ class RecipesController < ApplicationController
       @recipe.image.attach(params[:recipe][:image]) if params[:recipe][:image]
       render json: serialize_recipe(@recipe), status: :ok
     else
-      puts "*"*1000
-      puts @recipe.errors.full_messages
       render json: @recipe.errors, status: :unprocessable_entity
     end
   end
@@ -42,18 +40,30 @@ class RecipesController < ApplicationController
     @recipe.destroy
   end
 
-  def rate
-    @recipe = Recipe.find(params[:id])
-    rating = params[:rating].to_i
-  
-    # Calculate the new average rating and update the total ratings
-    @recipe.total_ratings += 1
-    @recipe.average_rating = (@recipe.average_rating * (@recipe.total_ratings - 1) + rating) / @recipe.total_ratings
-  
-    if @recipe.save
-      render json: serialize_recipe(@recipe), status: :ok
+  def like
+    if @recipe.user != current_user && !@recipe.liking_users.include?(current_user)
+      like = current_user.likes.build(recipe: @recipe)
+      if like.save
+        render json: { success: 'Recipe liked successfully' }
+      else
+        puts "*"*1000
+        puts like.errors.full_messages
+        render json: { error: like.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render json: @recipe.errors, status: :unprocessable_entity
+      render json: { error: 'Unable to like the recipe' }, status: :unauthorized
+    end
+  end
+
+  def unlike
+    puts "@"*1000
+    puts current_user.likes
+    like = current_user.likes.find_by(recipe: @recipe)
+    if like
+      like.destroy
+      render json: { success: 'Recipe unliked successfully' }
+    else
+      render json: { error: 'Unable to unlike the recipe' }, status: :unauthorized
     end
   end
 
@@ -72,6 +82,9 @@ class RecipesController < ApplicationController
   def serialize_recipe(recipe)
     recipe_hash = recipe.as_json(include: { user: { only: [:first, :last] } })
     recipe_hash[:image_url] = url_for(recipe.image) if recipe.image.attached?
+    recipe_hash[:like_count] = recipe.like_count
+    recipe_hash[:liking_users_ids] = recipe.liking_users.map(&:id)
+    recipe_hash[:liking_users_names] = recipe.liking_users.map { |user| "#{user.first} #{user.last}" }
     recipe_hash
   end
 

@@ -3,7 +3,8 @@ Rails.application.routes.draw do
     resources :recipes do
       resources :comments, only: [:create, :delete]
       member do
-        post 'rate'
+        post :like
+        delete :unlike
       end
     end
   end

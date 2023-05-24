@@ -7,7 +7,6 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.string :location
       t.string :bio
       t.string :avatar
-      t.string :string
       t.string :password_digest
 
       t.timestamps
