@@ -509,14 +509,17 @@ recipes = [{
   3. Pour tomato mixture in saucepan and stir; cook over medium heat for 10 minutes. Add parsley, salt and wine; reduce heat to low and simmer, stirring occasionally, until sauce thickens; serve."
 }]
 
-file = File.open(Rails.root.join('app', 'assets', 'images', 'phil_profile.png'))
-phil.image.attach(io: file, filename: 'phil_profile.png', content_type: 'image/png')
-phil.save!
+if Rails.env.development?
+  file = File.open(Rails.root.join('app', 'assets', 'images', 'phil_profile.png'))
+  phil.image.attach(io: file, filename: 'phil_profile.png', content_type: 'image/png')
+  phil.save!
+end
 
 recipes.each do |recipe_data|
   recipe = Recipe.new(recipe_data)
-  
-  file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
-  recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
+  if Rails.env.development?
+    file = File.open(Rails.root.join('app', 'assets', 'images', "#{recipe.name.downcase.gsub(' ', '-')}.png"))
+    recipe.image.attach(io: file, filename: "#{recipe.name.downcase.gsub(' ', '-')}.png", content_type: 'image/png')
+  end
   recipe.save!
 end

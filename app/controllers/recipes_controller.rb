@@ -46,8 +46,6 @@ class RecipesController < ApplicationController
       if like.save
         render json: { success: 'Recipe liked successfully' }
       else
-        puts "*"*1000
-        puts like.errors.full_messages
         render json: { error: like.errors.full_messages }, status: :unprocessable_entity
       end
     else
@@ -56,8 +54,6 @@ class RecipesController < ApplicationController
   end
 
   def unlike
-    puts "@"*1000
-    puts current_user.likes
     like = current_user.likes.find_by(recipe: @recipe)
     if like
       like.destroy

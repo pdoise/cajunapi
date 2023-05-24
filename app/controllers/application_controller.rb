@@ -9,6 +9,8 @@ class ApplicationController < ActionController::API
       decoded_token = decode(token)
       if decoded_token && decoded_token[:user_id].present?
         @current_user = User.find_by(id: decoded_token[:user_id])
+        puts "*"*1000
+        puts @current_user.inspect
         render json: { error: 'Not Authorized' }, status: 401 unless @current_user
       else
         render json: { error: 'Not Authorized' }, status: 401
