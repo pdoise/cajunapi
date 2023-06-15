@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :users do
     resources :recipes do
-      resources :comments, only: [:create, :delete]
+      resources :comments, only: [:create, :destroy]
       member do
         post :like
         delete :unlike

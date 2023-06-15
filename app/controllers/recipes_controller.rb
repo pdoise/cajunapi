@@ -77,12 +77,22 @@ class RecipesController < ApplicationController
   
   def serialize_recipe(recipe)
     recipe_hash = recipe.as_json(include: { user: { only: [:first, :last] } })
+    recipe_hash[:comments] = serialize_comments(recipe.comments)
     recipe_hash[:image_url] = url_for(recipe.image) if recipe.image.attached?
     recipe_hash[:like_count] = recipe.like_count
     recipe_hash[:liking_users_ids] = recipe.liking_users.map(&:id)
     recipe_hash[:liking_users_names] = recipe.liking_users.map { |user| "#{user.first} #{user.last}" }
     recipe_hash
   end
+
+  def serialize_comments(comments)
+    comments.map do |comment|
+      comment_hash = comment.as_json(include: { user: { only: [:first, :last, :image] } })
+      comment_hash[:user_image_url] = url_for(comment.user.image) if comment.user.image.attached?
+      comment_hash
+    end
+  end
+  
 
   def recipe_params
     params.require(:recipe).permit(:user_id, :id, :name, :description, :ingredients, :directions, :rating, :cooktime, :image)
