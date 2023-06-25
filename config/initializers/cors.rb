@@ -10,7 +10,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
 
   allow do
     if Rails.env.development?
-      origins 'localhost:3000', 'localhost:4200'
+      origins 'localhost:3000', 'localhost:4200', 'https://4af8-2601-283-4e81-2020-3521-d229-a451-37ce.ngrok-free.app'
     else
       origins 'https://cajuncookbook.herokuapp.com/'
     end

@@ -80,8 +80,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_020234) do
     t.string "location"
     t.string "bio"
     t.string "avatar"
-    t.integer "liked_recipe_ids", default: [], array: true
     t.string "password_digest"
+    t.string "facebook_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

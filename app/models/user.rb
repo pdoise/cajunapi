@@ -8,7 +8,7 @@ class User < ApplicationRecord
   validates :last, presence: true
   validates :email, presence: true, uniqueness: true,
             format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :password, presence: true, length: { minimum: 6 },
+  validates :password, length: { minimum: 6 },
             format: { with: /\A(?=.*[a-zA-Z])(?=.*[0-9]).{6,}\z/ },
             on: :create
 

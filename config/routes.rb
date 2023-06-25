@@ -13,7 +13,9 @@ Rails.application.routes.draw do
 
   post 'create', to: 'authentication#create'
   post 'login', to: 'authentication#authenticate'
+  post 'fblogin', to: 'authentication#fb_authenticate'
   get 'logout', to: 'authentication#logout'
+  get '/auth/facebook/callback', to: 'sessions#create'
 
   get '*other', to: 'static#index', constraints: lambda { |req|
     req.path.exclude? 'rails/active_storage'

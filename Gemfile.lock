@@ -90,6 +90,12 @@ GEM
       reline (>= 0.2.7)
     digest (3.1.0)
     erubi (1.10.0)
+    faraday (2.7.7)
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
+    faraday-net_http (3.0.2)
     globalid (1.0.0)
       activesupport (>= 5.0)
     i18n (1.10.0)
@@ -103,7 +109,14 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    json (2.6.3)
     jwt (2.7.0)
+    koala (3.4.0)
+      addressable
+      faraday
+      faraday-multipart
+      json (>= 1.8)
+      rexml
     loofah (2.18.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -116,6 +129,7 @@ GEM
     mini_portile2 (2.8.0)
     minitest (5.15.0)
     msgpack (1.5.2)
+    multipart-post (2.3.0)
     net-imap (0.2.3)
       digest
       net-protocol
@@ -179,6 +193,7 @@ GEM
     reline (0.3.1)
       io-console (~> 0.5)
     rexml (3.2.5)
+    ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     selenium-webdriver (4.2.0)
       childprocess (>= 0.5, < 5.0)
@@ -233,6 +248,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   jwt
+  koala
   pg
   puma (~> 5.0)
   rack-cors
