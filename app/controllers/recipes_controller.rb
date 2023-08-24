@@ -17,7 +17,7 @@ class RecipesController < ApplicationController
   end
 
   def create
-    @recipe = request.env[:current_user].recipes.build(recipe_params)
+    @recipe = current_user.recipes.build(recipe_params)
 
     if @recipe.save
       @recipe.image.attach(params[:recipe][:image])
