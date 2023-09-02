@@ -56,7 +56,6 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 gem "aws-sdk-s3", "~> 1.134"
-gem 'active_model_serializers'
 gem "dotenv-rails", "~> 2.8"
 
 
