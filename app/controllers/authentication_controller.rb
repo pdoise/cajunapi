@@ -28,16 +28,22 @@ class AuthenticationController < ApplicationController
     access_token = params[:access_token]
     
     graph = Koala::Facebook::API.new(access_token)
-    profile = graph.get_object('me', fields: 'id,name,first_name,last_name')
+    profile = graph.get_object('me', fields: 'id,name,first_name,last_name,email')
 
     user = User.find_by(facebook_id: profile['id'])
+
+    # Link facebook_id to existing email account if not already linked
+    if user.nil? && profile['email'].present?
+      user = User.find_by("LOWER(email) = ?", profile['email'].downcase)
+      user&.update_column(:facebook_id, profile['id'])
+    end
 
     if user
       token = encode(user_id: user.id)
       render json: { token: token, user: user }
     else
       generated_password = SecureRandom.alphanumeric(20)
-      placeholder_email = "fb_#{profile['id']}@facebook.placeholder"
+      placeholder_email = profile['email'].presence || "fb_#{profile['id']}@facebook.placeholder"
 
       user = User.new(
         email: placeholder_email,
