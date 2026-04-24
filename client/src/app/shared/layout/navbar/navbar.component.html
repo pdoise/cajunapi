@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <div class="navbar-translate">
+      <a class="navbar-brand" [routerLink]="['/landing']">Cajun Cookbook</a>
+      <button class="navbar-toggler navbar-burger" type="button" (click)="sidebarToggle()">
+        <span class="navbar-toggler-bar"></span>
+        <span class="navbar-toggler-bar"></span>
+        <span class="navbar-toggler-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse justify-content-end">
+      <ul class="navbar-nav ml-auto">
+        @if (!auth.isAuthenticated()) {
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Like us on Facebook"><!--href="https://www.facebook.com" target="_blank"-->
+              <i class="fa-brands fa-facebook-square"></i>
+              <p class="d-lg-none">Facebook</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Follow us on Instagram"><!--href="https://www.instagram.com" target="_blank"-->
+              <i class="fa-brands fa-instagram"></i>
+              <p class="d-lg-none">Instagram</p>
+            </a>
+          </li>
+          <!-- <li class="nav-item me-5">
+          <a class="nav-link" rel="tooltip" title="Star on GitHub" href="https://www.github.com" target="_blank">
+            <i class="fa-brands fa-github"></i>
+            <p class="d-lg-none">GitHub</p>
+          </a>
+        </li> -->
+      }
+      <li class="nav-item">
+        <a [routerLink]="['/recipes']"
+          class="nav-link">
+          <i class="fa fa-search"></i>
+          <p>Search Recipes</p>
+        </a>
+      </li>
+      @if (auth.isAuthenticated()) {
+        <li class="nav-item">
+          <a [routerLink]="['/cookbook/' + auth.getCurrentUser()?.id]"
+            class="nav-link">
+            <i class="fa fa-book"></i>
+            <p>My Cookbook</p>
+          </a>
+        </li>
+        <li class="nav-item pointer profile-nav-item">
+          <div ngbDropdown class="d-inline-block dropdown">
+            <a class="nav-link"
+              ngbDropdownToggle>
+              <i class="fa fa-user"></i>
+              <p>Profile</p>
+            </a>
+            <div ngbDropdownMenu class="dropdown-primary">
+              <button ngbDropdownItem>Settings</button>
+              <button ngbDropdownItem (click)="logout()">Logout</button>
+            </div>
+          </div>
+        </li>
+      }
+      @if (!auth.isAuthenticated()) {
+        <li class="nav-item">
+          <a [routerLink]="['/login']" class="btn btn-primary btn-round">Login</a>
+        </li>
+        <li class="nav-item">
+          <a [routerLink]="['/signup']" class="btn btn-primary btn-round">Sign Up</a>
+        </li>
+      }
+    </ul>
+  </div>
+</div>
+</nav>

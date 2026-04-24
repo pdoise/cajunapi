@@ -1,0 +1,130 @@
+<app-primary-layout>
+  <div class="wrapper">
+    <div class="page-header page-header-xs" [style.background-image]="'url(' + ((recipe$ | async)?.image_url ? (recipe$ | async)?.image_url : '/assets/images/no-image.png' ) + ')'">
+      <div class="filter"></div>
+      <button class="btn btn-outline-white btn-round back-button" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+    <div class="mt-3">
+      <div class="container">
+        @if (isOwner(recipe$ | async)) {
+          <span class="text-primary pointer">
+            <label for="file-upload">
+              <i class="fa fa-camera pointer"></i>
+              <span class="pointer"> {{(recipe$|async)?.image_url ? 'Replace Image': 'Add image'}}</span>
+            </label>
+            <input id="file-upload" accept=".png, .jpg, .jpeg" type="file" style="display:none" (change)="onFileSelected($event)">
+          </span>
+        }
+        <span class="like-icon like float-end" ngbTooltip="{{(recipe$|async)?.liking_users_names}}">
+          <i [ngClass]="{
+            'text-primary pointer': !isOwner(recipe$ | async),
+            'fa': alreadyLiked(recipe$ | async),
+            'far': !alreadyLiked(recipe$ | async)
+          }"
+            (click)="toggleLike()"
+            class="fa-thumbs-up">
+          </i>
+          <span>  {{(recipe$|async)?.like_count}}</span>
+        </span>
+        <div class="owner">
+          <div class="name">
+            <h4 class="title text-primary">{{(recipe$|async)?.name}}<br /></h4>
+          </div>
+        </div>
+        <div class="row mb-5">
+          <div class="col-md-2"></div>
+          <div class="col-md-8 ml-auto mr-auto text-center">
+            <p>{{(recipe$|async)?.description}}</p>
+            <br />
+            @if (isOwner(recipe$ | async)) {
+              <button
+                class="btn btn-outline-primary btn-round"
+                (click)="goEditRecipe()">
+                <i class="fa fa-cog"></i>
+                Edit Recipe
+              </button>
+            }
+          </div>
+          <div class="col-md-2"></div>
+        </div>
+        <div class="border-bottom"></div>
+        <div class="row mt-5">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-5">
+                <h5 class="text-primary">Ingredients:</h5>
+                <p class="pre" [innerHtml]="(recipe$|async)?.ingredients"></p>
+              </div>
+              <div class="col-md-7">
+                <h5 class="text-primary">Directions:</h5>
+                <p class="pre" [innerHtml]="(recipe$|async)?.directions"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row following">
+          <div class="col-md-12 text-center">
+            <h4 class="text-primary mb-3">Comments</h4>
+            <ul class="list-unstyled">
+              @for (comment of (comments$|async) | slice: (page - 1) * pageSize : page * pageSize; track comment) {
+                <li class="border-bottom mb-3">
+                  <div class="row align-items-center">
+                    <div class="col-md-2 col-sm-2 ml-auto mr-auto">
+                      @if (comment.user_image_url) {
+                        <img class="img-circle img-no-padding img-responsive pointer" [src]="comment.user_image_url" alt="Recipe Image" width="100" height="70" (click)="goUser(comment.user)">
+                      }
+                      @if (!comment.user_image_url) {
+                        <img class="img-circle img-no-padding img-responsive pointer" src="/assets/images/no-image.png" alt="No Image" width="100" height="70" (click)="goUser(comment.user)">
+                      }
+                      <h6 class="text-primary pointer" (click)="goUser(comment.user)">
+                        {{ comment.user.first }} {{ comment.user.last }}
+                      </h6>
+                    </div>
+                    <div class="col-md-8 col-sm-4 ml-auto">
+                      <span>{{ comment.content }}</span>
+                    </div>
+                    <div class="col-md-2 col-sm-2 ml-auto mr-auto">
+                      @if (isCommentOwner(comment)) {
+                        <span
+                          (click)="deleteComment(comment)"
+                          class="text-primary pointer">
+                          Delete
+                        </span>
+                      }
+                    </div>
+                  </div>
+                </li>
+              }
+              <pagination
+                [records]="comments$"
+                [filteredRecords]="comments$"
+                label="Total Comments"
+                [page]="page"
+                [pageSize]="pageSize"
+                (pageChanged)="page = $event">
+              </pagination>
+            </ul>
+          </div>
+        </div>
+        @if (auth.isAuthenticated()) {
+          <div>
+            <textarea
+              class="form-control mb-3 "
+              maxlength="1000"
+              [(ngModel)]="comment"
+              style="min-height:100px">
+            </textarea>
+          </div>
+          <button class="btn btn-outline-primary btn-round mb-3"
+            (click)="addComment()"
+            [disabled]="!comment">
+            <i class="fa-solid fa-comment"></i>
+            Add Comment
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</app-primary-layout>

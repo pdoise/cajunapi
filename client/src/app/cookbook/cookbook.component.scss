@@ -1,0 +1,27 @@
+.avatar img, .card img {
+  cursor: pointer;
+  width: 100%;
+  object-fit: cover;
+}
+
+.avatar img {
+  width: 135px;
+  height: 135px;
+}
+
+.avatar {
+  margin-bottom: -25px;
+}
+
+.card-image img {
+  height: 200px;
+}
+
+.owner{
+  margin-top: -75px;
+}
+
+.cookbook-title {
+  margin-top: -20px;
+  padding-bottom: 20px;
+}
