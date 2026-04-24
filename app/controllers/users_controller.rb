@@ -1,51 +1,36 @@
-class UsersController < ApplicationController 
-  skip_before_action :authorize, only: [:index, :show]
-  before_action :get_user, only: [:show, :update, :destroy]
-
-  def index
-    @users = User.all
-    render json: @users.map{ |user| serialize_user(user) }
-  end
+class UsersController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:show]
+  before_action :set_user
+  before_action :require_owner!, only: [:edit, :update]
 
   def show
-    render json: serialize_user(@user)
+    redirect_to user_recipes_path(@user)
   end
 
-  def create
-    @user = User.create(user_params)
-    if @user.save!
-      render json: @user
-    else
-      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
-    end
-  end 
+  def edit
+  end
 
   def update
     if @user.update(user_params)
-      render json: @user
+      @user.image.attach(params[:user][:image]) if params.dig(:user, :image).present?
+      redirect_to user_recipes_path(@user), notice: 'Profile updated!'
     else
-      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+      flash.now[:alert] = @user.errors.full_messages.join(', ')
+      render :edit, status: :unprocessable_entity
     end
-  end
-
-  def destroy
-    @user.destroy
   end
 
   private
 
-  def get_user
+  def set_user
     @user = User.find(params[:id])
   end
 
-  def serialize_user(user)
-    user_hash = user.as_json()
-    user_hash[:image_url] = url_for(user.image) if user.image.attached?
-    user_hash
+  def require_owner!
+    redirect_to root_path, alert: 'Not authorized.' unless @user == current_user
   end
 
   def user_params
-    params.require(:user).permit(:first, :last, :avatar, :location, :email, :bio, :password, :password_confirmation, :image)
+    params.require(:user).permit(:first, :last, :location, :bio, :image)
   end
-
 end

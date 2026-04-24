@@ -1,0 +1,79 @@
+<div class="bg-primary py-5">
+  <div class="container text-center text-white">
+    <h1 class="fw-bold mb-4">Discover Recipes</h1>
+    <%= form_with url: all_recipes_path, method: :get, data: { turbo: false } do |f| %>
+      <div class="d-flex gap-2 justify-content-center">
+        <div style="max-width: 480px; width: 100%;">
+          <%= f.search_field :search, value: params[:search],
+              class: "form-control form-control-lg rounded-pill border-0 shadow-sm",
+              placeholder: "Search recipes..." %>
+        </div>
+        <button class="btn btn-light btn-round px-4 shadow-sm" type="submit">
+          <i class="fas fa-search text-primary"></i>
+        </button>
+        <% if params[:search].present? %>
+          <%= link_to all_recipes_path, class: "btn btn-outline-light btn-round" do %>
+            <i class="fas fa-times"></i>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="bg-light py-5">
+  <div class="container">
+    <% if params[:search].present? %>
+      <p class="text-muted mb-4">
+        <%= @recipes.count %> result<%= "s" unless @recipes.count == 1 %> for
+        "<strong><%= params[:search] %></strong>"
+      </p>
+    <% end %>
+
+    <div class="row g-4">
+      <% @recipes.each do |recipe| %>
+        <div class="col-lg-4 col-md-6">
+          <%= link_to user_recipe_path(recipe.user, recipe), class: "text-decoration-none text-dark" do %>
+            <div class="card h-100 border-0 shadow-sm recipe-card">
+              <% if recipe.image.attached? %>
+                <%= image_tag recipe.image, class: "card-img-top",
+                    style: "height: 200px; object-fit: cover;" %>
+              <% else %>
+                <div class="card-img-top bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center"
+                     style="height: 200px;">
+                  <i class="fas fa-utensils text-secondary fs-1"></i>
+                </div>
+              <% end %>
+              <div class="card-body">
+                <h5 class="card-title fw-semibold mb-1"><%= recipe.name %></h5>
+                <p class="card-text text-muted small mb-3">
+                  <%= truncate(recipe.description, length: 90) %>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted small">
+                    <i class="fas fa-heart text-danger me-1"></i><%= recipe.like_count %>
+                  </span>
+                  <span class="text-muted small">
+                    <%= link_to "#{recipe.user.first} #{recipe.user.last}",
+                        user_recipes_path(recipe.user),
+                        class: "text-primary text-decoration-none" %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @recipes.empty? %>
+      <div class="text-center py-5 text-muted">
+        <i class="fas fa-search fs-1 mb-3 d-block opacity-25"></i>
+        <p class="mb-0">No recipes found.</p>
+        <% if params[:search].present? %>
+          <%= link_to "Clear search", all_recipes_path, class: "btn btn-primary btn-round mt-3" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

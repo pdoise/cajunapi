@@ -1,31 +1,24 @@
 class CommentsController < ApplicationController
-  before_action :get_comment, only: [:destroy]
+  before_action :set_recipe
 
   def create
-    @recipe = Recipe.find(params[:recipe_id])
     @comment = @recipe.comments.build(comment_params)
     @comment.user = current_user
-
-    if @comment.save
-      render json: @comment, status: :created
-    else
-      render json: @comment.errors, status: :unprocessable_entity
-    end
+    @comment.save
+    redirect_to user_recipe_path(@user, @recipe)
   end
 
   def destroy
-    if @comment.user == current_user
-      @comment.destroy
-      head :no_content
-    else
-      render json: { error: "Unauthorized" }, status: :unauthorized
-    end
+    comment = @recipe.comments.find(params[:id])
+    comment.destroy if comment.user == current_user
+    redirect_to user_recipe_path(@user, @recipe)
   end
 
   private
 
-  def get_comment
-    @comment = Comment.find(params[:id])
+  def set_recipe
+    @user   = User.find(params[:user_id])
+    @recipe = @user.recipes.find(params[:recipe_id])
   end
 
   def comment_params

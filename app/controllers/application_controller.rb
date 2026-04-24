@@ -1,40 +1,18 @@
-class ApplicationController < ActionController::API
-  before_action :authorize
-  attr_reader :current_user
+class ApplicationController < ActionController::Base
+  before_action :authenticate_user!
+  helper_method :current_user, :logged_in?
 
-  def authorize
-    @headers = request.headers
-    if @headers['Authorization'].present?
-      token = @headers['Authorization'].split(' ').last
-      decoded_token = decode(token)
-      if decoded_token && decoded_token[:user_id].present?
-        @current_user = User.find_by(id: decoded_token[:user_id])
-        render json: { error: 'Not Authorized' }, status: 401 unless @current_user
-      else
-        render json: { error: 'Not Authorized' }, status: 401
-      end
-    else
-      render json: { error: 'Not Authorized' }, status: 401
-    end
-  end
-  
-   
   private
 
-  def encode(payload)
-    JWT.encode(payload, Rails.env.production? ? Rails.application.credentials.read : Rails.application.secrets.secret_key_base)
-   end
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  end
 
-  # If you need to log people out
-  #def encode(payload, exp = 24.hours.from_now)
-  # payload[:exp] = exp.to_i
-  # JWT.encode(payload, Rails.env.production? ? Rails.application.credentials.read : Rails.application.secrets.secret_key_base)
-  #end
+  def logged_in?
+    current_user.present?
+  end
 
-  def decode(token)
-    body = JWT.decode(token, Rails.env.production? ? Rails.application.credentials.read : Rails.application.secrets.secret_key_base)[0]
-    HashWithIndifferentAccess.new body
-  rescue
-    nil
+  def authenticate_user!
+    redirect_to login_path, alert: 'Please log in to continue.' unless logged_in?
   end
 end

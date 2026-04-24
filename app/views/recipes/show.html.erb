@@ -1,0 +1,148 @@
+<div class="position-relative overflow-hidden" style="height: 380px;">
+  <% if @recipe.image.attached? %>
+    <%= image_tag @recipe.image, class: "w-100 h-100",
+        style: "object-fit: cover; object-position: center;" %>
+  <% else %>
+    <div class="w-100 h-100 bg-secondary d-flex align-items-center justify-content-center">
+      <i class="fas fa-utensils text-white" style="font-size: 4rem; opacity: 0.4;"></i>
+    </div>
+  <% end %>
+  <div class="position-absolute bottom-0 start-0 end-0 text-white p-4"
+       style="background: linear-gradient(transparent, rgba(0,0,0,0.75));">
+    <div class="container">
+      <h1 class="fw-bold mb-1"><%= @recipe.name %></h1>
+      <p class="mb-0 opacity-75 small">
+        by
+        <%= link_to "#{@recipe.user.first} #{@recipe.user.last}",
+            user_recipes_path(@recipe.user), class: "text-white fw-semibold" %>
+        <% if @recipe.cooktime.present? && @recipe.cooktime > 0 %>
+          &nbsp;·&nbsp;<i class="fas fa-clock me-1"></i><%= @recipe.cooktime %> min
+        <% end %>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <%# Action bar %>
+  <div class="d-flex align-items-center gap-2 mb-4 flex-wrap">
+    <%= link_to user_recipes_path(@recipe.user), class: "btn btn-outline-secondary btn-round btn-sm" do %>
+      <i class="fas fa-arrow-left me-1"></i> Cookbook
+    <% end %>
+
+    <% if current_user && current_user != @recipe.user %>
+      <% if @user_liked %>
+        <%= button_to unlike_user_recipe_path(@recipe.user, @recipe), method: :delete,
+            class: "btn btn-danger btn-round btn-sm",
+            data: { turbo: false } do %>
+          <i class="fas fa-heart me-1"></i> Liked (<%= @recipe.like_count %>)
+        <% end %>
+      <% else %>
+        <%= button_to like_user_recipe_path(@recipe.user, @recipe), method: :post,
+            class: "btn btn-outline-danger btn-round btn-sm",
+            data: { turbo: false } do %>
+          <i class="far fa-heart me-1"></i> Like (<%= @recipe.like_count %>)
+        <% end %>
+      <% end %>
+    <% elsif @recipe.like_count > 0 %>
+      <span class="text-muted small">
+        <i class="fas fa-heart text-danger me-1"></i><%= @recipe.like_count %> like<%= "s" unless @recipe.like_count == 1 %>
+      </span>
+    <% end %>
+
+    <% if current_user == @recipe.user %>
+      <%= link_to "Edit", edit_user_recipe_path(@recipe.user, @recipe),
+          class: "btn btn-outline-primary btn-round btn-sm" %>
+      <%= button_to "Delete", user_recipe_path(@recipe.user, @recipe), method: :delete,
+          class: "btn btn-outline-danger btn-round btn-sm",
+          data: { turbo_confirm: "Delete this recipe?" } %>
+    <% end %>
+  </div>
+
+  <%# Description %>
+  <% if @recipe.description.present? %>
+    <p class="lead mb-4"><%= @recipe.description %></p>
+  <% end %>
+
+  <%# Ingredients & Directions %>
+  <div class="row g-4 mb-5">
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h4 class="fw-bold text-primary mb-3">
+            <i class="fas fa-list-ul me-2"></i>Ingredients
+          </h4>
+          <div class="recipe-content"><%= simple_format @recipe.ingredients %></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h4 class="fw-bold text-primary mb-3">
+            <i class="fas fa-list-ol me-2"></i>Directions
+          </h4>
+          <div class="recipe-content"><%= simple_format @recipe.directions %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Comments %>
+  <div class="mb-5">
+    <h4 class="fw-bold mb-4">
+      <i class="far fa-comment me-2 text-primary"></i>Comments
+      <span class="badge bg-secondary fw-normal ms-1"><%= @comments.count %></span>
+    </h4>
+
+    <% if logged_in? %>
+      <%= form_with model: [@recipe.user, @recipe, @comment], class: "mb-4" do |f| %>
+        <div class="d-flex gap-3 align-items-start">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
+               style="width: 38px; height: 38px; min-width: 38px; font-size: 0.8rem;">
+            <%= current_user.first[0].upcase %>
+          </div>
+          <div class="flex-grow-1">
+            <%= f.text_area :content, class: "form-control mb-2", rows: 2,
+                placeholder: "Add a comment..." %>
+            <%= f.submit "Post Comment", class: "btn btn-primary btn-round btn-sm" %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-muted small mb-4">
+        <%= link_to "Log in", login_path, class: "text-primary fw-semibold" %> to leave a comment.
+      </p>
+    <% end %>
+
+    <% @comments.each do |comment| %>
+      <div class="d-flex gap-3 mb-3">
+        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold"
+             style="width: 38px; height: 38px; min-width: 38px; font-size: 0.8rem;">
+          <%= comment.user.first[0].upcase %>
+        </div>
+        <div class="flex-grow-1">
+          <div class="bg-light rounded-3 p-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <strong class="small"><%= "#{comment.user.first} #{comment.user.last}" %></strong>
+              <% if current_user == comment.user %>
+                <%= button_to user_recipe_comment_path(@recipe.user, @recipe, comment),
+                    method: :delete,
+                    class: "btn btn-link btn-sm text-muted p-0 ms-2 lh-1",
+                    data: { turbo_confirm: "Delete comment?" } do %>
+                  <i class="fas fa-times small"></i>
+                <% end %>
+              <% end %>
+            </div>
+            <p class="mb-0 mt-1 small"><%= comment.content %></p>
+          </div>
+          <small class="text-muted ms-2"><%= time_ago_in_words(comment.created_at) %> ago</small>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @comments.empty? %>
+      <p class="text-muted small">No comments yet. Be the first!</p>
+    <% end %>
+  </div>
+</div>

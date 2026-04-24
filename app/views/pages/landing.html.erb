@@ -1,0 +1,13 @@
+<div class="page-header" style="background-image: url('/assets/images/pasta2.png');">
+  <div class="filter"></div>
+  <div class="container text-center text-white">
+    <h1 class="display-4 fw-bold mb-3">Cajun Cookbook</h1>
+    <p class="lead mb-5">Discover and share authentic Cajun &amp; Creole recipes</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <%= link_to "Discover Recipes", all_recipes_path, class: "btn btn-primary btn-lg btn-round px-5" %>
+      <% unless logged_in? %>
+        <%= link_to "Sign Up Free", signup_path, class: "btn btn-outline-light btn-lg btn-round px-5" %>
+      <% end %>
+    </div>
+  </div>
+</div>

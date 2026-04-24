@@ -29,7 +29,6 @@
 /config/master.key
 .env
 
-# Angular client
-/client/node_modules
-/client/.angular
-/client/dist
+/public/assets/*.js
+/public/assets/*.css
+/public/assets/*.map

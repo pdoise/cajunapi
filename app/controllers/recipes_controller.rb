@@ -1,100 +1,86 @@
 class RecipesController < ApplicationController
-  skip_before_action :authorize, only: [:index, :show]
-  before_action :get_recipe, only: [:show, :update, :destroy, :like, :unlike]
-  before_action :authorized_user, only: [:update, :destroy]
+  skip_before_action :authenticate_user!, only: [:index, :show]
+  before_action :set_recipe,    only: [:show, :edit, :update, :destroy, :like, :unlike]
+  before_action :set_user,      only: [:index, :new, :create]
+  before_action :require_owner!, only: [:edit, :update, :destroy]
 
   def index
-    if params[:user_id].present?
-      @recipes = User.find(params[:user_id]).recipes.with_attached_image.includes(:user).order(:id)
+    if @user
+      @recipes = @user.recipes.with_attached_image.order(:id)
+      render :cookbook
     else
-      @recipes = Recipe.with_attached_image.includes(:user).order(:id)
+      @recipes = Recipe.with_attached_image.includes(:user, :likes).order(created_at: :desc)
+      @recipes = @recipes.where("name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
     end
-    render json: @recipes.map{ |recipe| serialize_recipe(recipe) }
   end
 
   def show
-    render json: serialize_recipe(@recipe)
+    @comments   = @recipe.comments.includes(:user).order(:created_at)
+    @comment    = Comment.new
+    @user_liked = current_user&.likes&.exists?(recipe: @recipe)
+  end
+
+  def new
+    @recipe = @user.recipes.build
   end
 
   def create
-    @recipe = current_user.recipes.build(recipe_params)
-
+    @recipe = @user.recipes.build(recipe_params)
     if @recipe.save
-      @recipe.image.attach(params[:recipe][:image])
-      render json: serialize_recipe(@recipe), status: :created
+      @recipe.image.attach(params[:recipe][:image]) if params.dig(:recipe, :image).present?
+      redirect_to user_recipe_path(@user, @recipe), notice: 'Recipe created!'
     else
-      render json: @recipe.errors, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity
     end
+  end
+
+  def edit
+    @user = @recipe.user
   end
 
   def update
     if @recipe.update(recipe_params)
-      @recipe.image.attach(params[:recipe][:image]) if params[:recipe][:image]
-      render json: serialize_recipe(@recipe), status: :ok
+      @recipe.image.attach(params[:recipe][:image]) if params.dig(:recipe, :image).present?
+      redirect_to user_recipe_path(@recipe.user, @recipe), notice: 'Recipe updated!'
     else
-      render json: @recipe.errors, status: :unprocessable_entity
+      @user = @recipe.user
+      render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
+    user = @recipe.user
     @recipe.destroy
+    redirect_to user_recipes_path(user), notice: 'Recipe deleted.'
   end
 
   def like
-    if @recipe.user != current_user && !@recipe.liking_users.include?(current_user)
-      like = current_user.likes.build(recipe: @recipe)
-      if like.save
-        render json: { success: 'Recipe liked successfully' }
-      else
-        render json: { error: like.errors.full_messages }, status: :unprocessable_entity
-      end
-    else
-      render json: { error: 'Unable to like the recipe' }, status: :unauthorized
+    unless @recipe.user == current_user || @recipe.liking_users.include?(current_user)
+      current_user.likes.create(recipe: @recipe)
     end
+    redirect_to user_recipe_path(@recipe.user, @recipe)
   end
 
   def unlike
-    like = current_user.likes.find_by(recipe: @recipe)
-    if like
-      like.destroy
-      render json: { success: 'Recipe unliked successfully' }
-    else
-      render json: { error: 'Unable to unlike the recipe' }, status: :unauthorized
-    end
+    current_user.likes.find_by(recipe: @recipe)&.destroy
+    redirect_to user_recipe_path(@recipe.user, @recipe)
   end
 
   private
 
-  def get_recipe
-    @recipe = Recipe.with_attached_image.includes(:user).find(params[:id])
+  def set_recipe
+    @recipe = Recipe.with_attached_image.includes(:user, :likes).find(params[:id])
   end
 
-  def authorized_user
-    unless @recipe.user == current_user
-      render json: { error: 'Unauthorized' }, status: :unauthorized
-    end
-  end
-  
-  def serialize_recipe(recipe)
-    recipe_hash = recipe.as_json(include: { user: { only: [:first, :last] } })
-    recipe_hash[:comments] = serialize_comments(recipe.comments)
-    recipe_hash[:image_url] = url_for(recipe.image) if recipe.image.attached?
-    recipe_hash[:like_count] = recipe.like_count
-    recipe_hash[:liking_users_ids] = recipe.liking_users.map(&:id)
-    recipe_hash[:liking_users_names] = recipe.liking_users.map { |user| "#{user.first} #{user.last}" }
-    recipe_hash
+  def set_user
+    @user = User.find(params[:user_id]) if params[:user_id].present?
   end
 
-  def serialize_comments(comments)
-    comments.map do |comment|
-      comment_hash = comment.as_json(include: { user: { only: [:first, :last, :image] } })
-      comment_hash[:user_image_url] = url_for(comment.user.image) if comment.user.image.attached?
-      comment_hash
-    end
+  def require_owner!
+    redirect_to root_path, alert: 'Not authorized.' unless @recipe.user == current_user
   end
-  
 
   def recipe_params
-    params.require(:recipe).permit(:user_id, :id, :name, :description, :ingredients, :directions, :rating, :cooktime, :image)
+    params.require(:recipe).permit(:name, :description, :ingredients, :directions, :cooktime, :image)
   end
 end
