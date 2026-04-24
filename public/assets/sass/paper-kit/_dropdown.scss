@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'mixins' as *;
 .dropdown{
     .dropdown-menu{
         background-color: $white-color;

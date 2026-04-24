@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'mixins' as *;
 .btn{
     box-sizing: border-box;
     border-width: $border-thick;

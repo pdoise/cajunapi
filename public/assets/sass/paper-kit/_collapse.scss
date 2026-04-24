@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'mixins' as *;
 .panel {
     border: 0;
     border-bottom: 1px solid $medium-gray;

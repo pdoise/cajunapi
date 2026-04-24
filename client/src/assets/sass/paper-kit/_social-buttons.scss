@@ -1,3 +1,4 @@
+@use 'variables' as *;
 .btn-twitter{
     color: $social-twitter !important;
 
@@ -41,31 +42,31 @@
     background-color: $social-twitter !important;
     border-color: $social-twitter !important;
     &:hover{
-        background-color: darken($social-twitter, 5%) !important;
-        border-color: darken($social-twitter, 5%) !important;
+        background-color: #3d9ad6 !important;
+        border-color: #3d9ad6 !important;
     }
 }
 .btn-facebook-bg{
     background-color: $social-facebook !important;
     border-color: $social-facebook !important;
     &:hover{
-        background-color: darken($social-facebook, 5%) !important;
-        border-color: darken($social-facebook, 5%) !important;
+        background-color: #2f4779 !important;
+        border-color: #2f4779 !important;
     }
 }
 .btn-google-bg{
     background-color: $social-google !important;
     border-color: $social-google !important;
     &:hover{
-        background-color: darken($social-google, 5%) !important;
-        border-color: darken($social-google, 5%) !important;
+        background-color: #c73b27 !important;
+        border-color: #c73b27 !important;
     }
 }
 .btn-github-bg{
     background-color: #767676 !important;
     border-color: #767676 !important;
     &:hover{
-        background-color: darken(#767676, 5%) !important;
-        border-color: darken(#767676, 5%) !important;
+        background-color: #696969 !important;
+        border-color: #696969 !important;
     }
 }

@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'mixins' as *;
 .carousel-control-prev,
 .carousel-control-next{
     background-color: $danger-color;

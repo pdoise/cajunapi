@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'mixins' as *;
 .form-check,
 .form-check-radio {
   padding: 0;

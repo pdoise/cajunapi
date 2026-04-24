@@ -1,3 +1,4 @@
+@use '../variables' as *;
 @mixin label-style(){
      padding: $padding-label-vertical $padding-label-horizontal;
      border: 1px solid $default-color;

@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'mixins' as *;
 /*          Changes for small display      */
 
 @media (max-width: 767px){

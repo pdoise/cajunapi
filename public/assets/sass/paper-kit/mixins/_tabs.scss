@@ -1,3 +1,4 @@
+@use '../variables' as *;
 @mixin pill-style($color){
     border: 1px solid $color;
     color: $color;

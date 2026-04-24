@@ -1,3 +1,5 @@
+@use 'variables' as *;
+@use 'mixins' as *;
 .form-control::-moz-placeholder{
    @include placeholder($placeholder-gray,1);
 }
