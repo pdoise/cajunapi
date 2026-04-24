@@ -11,22 +11,41 @@
     <%= javascript_importmap_tags %>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+    <nav class="navbar navbar-expand-lg bg-white border-bottom">
       <div class="container">
-        <%= link_to root_path, class: "navbar-brand fw-bold text-primary" do %>
-          <i class="fa-solid fa-bowl-food me-1"></i> Cajun Cookbook
-        <% end %>
-        <div class="ms-auto d-flex align-items-center gap-2">
-          <%= link_to "Recipes", all_recipes_path, class: "nav-link text-dark me-1" %>
-          <% if logged_in? %>
-            <%= link_to current_user.first, user_recipes_path(current_user), class: "btn btn-outline-primary btn-sm btn-round" %>
-            <%= button_to "Logout", logout_path, method: :delete,
-                class: "btn btn-primary btn-sm btn-round",
-                data: { turbo: false } %>
-          <% else %>
-            <%= link_to "Login",   login_path,  class: "btn btn-outline-primary btn-sm btn-round" %>
-            <%= link_to "Sign Up", signup_path, class: "btn btn-primary btn-sm btn-round" %>
-          <% end %>
+        <%= link_to "CAJUN COOKBOOK", root_path, class: "navbar-brand" %>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="ms-auto d-flex align-items-center gap-3 py-2 py-lg-0">
+            <a href="https://www.facebook.com/cajuncookbook" class="nav-icon-link" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com" class="nav-icon-link" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+            <%= link_to all_recipes_path, class: "nav-search-link" do %>
+              <i class="fas fa-search me-1"></i>Search Recipes
+            <% end %>
+            <% if logged_in? %>
+              <%= link_to user_recipes_path(current_user), class: "nav-search-link" do %>
+                <i class="fas fa-book-open me-1"></i>My Cookbook
+              <% end %>
+              <div class="dropdown">
+                <a class="nav-search-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user me-1"></i>Profile
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                  <li><%= link_to "Settings", edit_user_path(current_user), class: "dropdown-item" %></li>
+                  <li>
+                    <%= button_to "Logout", logout_path, method: :delete,
+                        class: "dropdown-item text-start border-0 bg-transparent w-100 px-4",
+                        data: { turbo: false } %>
+                  </li>
+                </ul>
+              </div>
+            <% else %>
+              <%= link_to "LOGIN", login_path, class: "btn btn-primary btn-sm btn-round px-4" %>
+              <%= link_to "SIGN UP", signup_path, class: "btn btn-primary btn-sm btn-round px-4" %>
+            <% end %>
+          </div>
         </div>
       </div>
     </nav>
@@ -40,6 +59,16 @@
     <% end %>
 
     <%= yield %>
+
+    <footer class="border-top bg-white py-3">
+      <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex gap-4">
+          <a href="#" class="text-muted text-decoration-none small text-uppercase fw-semibold">Terms</a>
+          <a href="#" class="text-muted text-decoration-none small text-uppercase fw-semibold">About</a>
+        </div>
+        <small class="text-muted">&copy; <%= Date.today.year %>, version 1.0</small>
+      </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>

@@ -7,6 +7,7 @@ class RecipesController < ApplicationController
   def index
     if @user
       @recipes = @user.recipes.with_attached_image.order(:id)
+      @recipes = @recipes.where("name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
       render :cookbook
     else
       @recipes = Recipe.with_attached_image.includes(:user, :likes).order(created_at: :desc)

@@ -1,13 +1,106 @@
+<%# Hero %>
 <div class="page-header" style="background-image: url('/assets/images/pasta2.png');">
   <div class="filter"></div>
   <div class="container text-center text-white">
-    <h1 class="display-4 fw-bold mb-3">Cajun Cookbook</h1>
-    <p class="lead mb-5">Discover and share authentic Cajun &amp; Creole recipes</p>
+    <h1 class="display-3 fw-normal mb-3">Cajun Cookbook</h1>
+    <p class="lead mb-5">Discover the Best Recipes from Louisiana - Cajun, Creole, and Southern Cuisine</p>
     <div class="d-flex gap-3 justify-content-center flex-wrap">
-      <%= link_to "Discover Recipes", all_recipes_path, class: "btn btn-primary btn-lg btn-round px-5" %>
-      <% unless logged_in? %>
-        <%= link_to "Sign Up Free", signup_path, class: "btn btn-outline-light btn-lg btn-round px-5" %>
-      <% end %>
+      <%= link_to "SEARCH RECIPES", all_recipes_path, class: "btn-hero-outline" %>
+      <%= link_to "CREATE YOUR COOKBOOK", signup_path, class: "btn-hero-outline" %>
     </div>
   </div>
 </div>
+
+<%# Featured Recipes %>
+<section class="py-5 bg-white">
+  <div class="container">
+    <h2 class="text-center text-cajun fw-normal mb-5" style="font-size: 2rem;">Featured Recipes</h2>
+    <div class="row g-4">
+      <% @featured_recipes.each do |recipe| %>
+        <div class="col-lg-4 col-md-6">
+          <div class="featured-card text-center">
+            <%= link_to user_recipe_path(recipe.user, recipe) do %>
+              <% if recipe.image.attached? %>
+                <%= image_tag recipe.image %>
+              <% else %>
+                <div class="d-flex align-items-center justify-content-center bg-light"
+                     style="height:220px; border-radius:10px; border:1px solid #e8e8e8;">
+                  <i class="fas fa-utensils text-secondary fs-1"></i>
+                </div>
+              <% end %>
+            <% end %>
+            <%= link_to recipe.name, user_recipe_path(recipe.user, recipe), class: "recipe-title d-block" %>
+            <p class="contributor mb-0">Contributor: <%= recipe.user.first %> <%= recipe.user.last %></p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<%# Your Virtual Recipe Book %>
+<section class="py-5 bg-cream">
+  <div class="container text-center">
+    <h2 class="fw-normal mb-4" style="font-size: 2rem;">Your Virtual Recipe Book</h2>
+    <p class="text-muted mx-auto mb-4" style="max-width: 760px;">
+      Welcome to Cajun Cookbook, the perfect place to store your family recipes, share them with others,
+      and discover new recipes. Easily pull up recipes on your phone or laptop while cooking, create your
+      own cookbook, like and comment on other people's recipes. Whether you're looking for a classic
+      jambalaya or a unique seafood gumbo, you will find it here. Let's cook up some magic together!
+    </p>
+    <%= link_to "GET STARTED", signup_path, class: "btn btn-primary btn-round px-5 mb-5" %>
+
+    <div class="row g-4 text-center mt-2">
+      <div class="col-md-3">
+        <h6 class="fw-semibold mb-2">Build Your Own Cookbook</h6>
+        <p class="text-muted small">Create and customize your own cookbook filled with your favorite recipes. Save, organize, and access your recipes anytime, anywhere.</p>
+        <%= link_to "GET STARTED", signup_path, class: "text-cajun fw-semibold small text-uppercase text-decoration-underline" %>
+      </div>
+      <div class="col-md-3">
+        <h6 class="fw-semibold mb-2">Share Your Recipes</h6>
+        <p class="text-muted small">Share your recipes with friends and family. Get feedback, comments, and ratings on your recipes from others. Discover new recipes from other cooks.</p>
+        <%= link_to "GET STARTED", signup_path, class: "text-cajun fw-semibold small text-uppercase text-decoration-underline" %>
+      </div>
+      <div class="col-md-3">
+        <h6 class="fw-semibold mb-2">Discover Authentic Southern Flavors</h6>
+        <p class="text-muted small">Explore a collection of authentic cajun recipes, from classic dishes to new and innovative creations.</p>
+        <%= link_to "GET STARTED", signup_path, class: "text-cajun fw-semibold small text-uppercase text-decoration-underline" %>
+      </div>
+      <div class="col-md-3">
+        <h6 class="fw-semibold mb-2">Connect with Others</h6>
+        <p class="text-muted small">Join a community of cajun food lovers who share the same passion for this delicious cuisine. Get inspired, share stories, and make new friends who share your love for cajun cooking.</p>
+        <%= link_to "GET STARTED", signup_path, class: "text-cajun fw-semibold small text-uppercase text-decoration-underline" %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# Contact %>
+<section class="py-5 bg-white">
+  <div class="container" style="max-width: 900px;">
+    <h2 class="text-muted fw-light text-center mb-5" style="font-size: 2rem;">Questions, comments or feedback?</h2>
+    <%= form_with url: contact_path, method: :post, data: { turbo: false } do |f| %>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label text-muted small">Name</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fas fa-user text-muted"></i></span>
+            <%= f.text_field :name, placeholder: "Name", class: "form-control border-start-0" %>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label text-muted small">Email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+            <%= f.email_field :email, placeholder: "Email", class: "form-control border-start-0" %>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label text-muted small">Message</label>
+        <%= f.text_area :message, placeholder: "What's on your mind?", class: "form-control", rows: 5 %>
+      </div>
+      <%= f.submit "SEND MESSAGE", class: "btn btn-primary btn-round px-4" %>
+    <% end %>
+  </div>
+</section>

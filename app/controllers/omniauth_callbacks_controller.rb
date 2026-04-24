@@ -11,10 +11,13 @@ class OmniauthCallbacksController < ApplicationController
     end
 
     if user.nil?
+      unless auth.info.email.present?
+        redirect_to login_path, alert: "Facebook login requires email access. Please ensure the app has email permission enabled."
+        return
+      end
       generated_password = SecureRandom.alphanumeric(20)
-      email = auth.info.email.presence || "fb_#{auth.uid}@facebook.placeholder"
       user = User.new(
-        email: email,
+        email: auth.info.email,
         facebook_id: auth.uid,
         first: auth.info.first_name,
         last: auth.info.last_name,

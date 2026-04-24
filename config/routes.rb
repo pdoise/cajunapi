@@ -23,5 +23,7 @@ Rails.application.routes.draw do
 
   get '/recipes', to: 'recipes#index', as: 'all_recipes'
 
+  post '/contact', to: 'pages#contact', as: 'contact'
+
   root to: 'pages#landing'
 end

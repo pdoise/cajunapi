@@ -1,94 +1,94 @@
-<div class="bg-primary text-white py-5">
-  <div class="container">
-    <div class="d-flex align-items-center gap-4 flex-wrap">
-      <% if @user.image.attached? %>
-        <%= image_tag @user.image,
-            class: "rounded-circle border border-3 border-white shadow",
-            style: "width: 90px; height: 90px; object-fit: cover;" %>
-      <% else %>
-        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold fs-2 border border-3 border-white shadow"
-             style="width: 90px; height: 90px; min-width: 90px;">
-          <%= @user.first[0].upcase %>
-        </div>
-      <% end %>
+<%# Profile header band %>
+<div class="text-center py-4" style="background: #f5f5f5;">
+  <h2 class="text-cajun fw-bold text-uppercase mb-4" style="font-size: 2.5rem; letter-spacing: 2px;">
+    <%= current_user == @user ? "My Cookbook" : "#{@user.first}'s Cookbook" %>
+  </h2>
 
-      <div class="flex-grow-1">
-        <h2 class="fw-bold mb-1"><%= "#{@user.first} #{@user.last}" %></h2>
-        <% if @user.location.present? %>
-          <p class="mb-1 opacity-75">
-            <i class="fas fa-map-marker-alt me-1"></i><%= @user.location %>
-          </p>
-        <% end %>
-        <% if @user.bio.present? %>
-          <p class="mb-0 opacity-75"><%= @user.bio %></p>
-        <% end %>
-      </div>
+  <% if @user.image.attached? %>
+    <%= image_tag @user.image, class: "rounded-circle",
+        style: "width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" %>
+  <% else %>
+    <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-white"
+         style="width: 100px; height: 100px; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 2rem; color: #bbb;">
+      <i class="fas fa-user"></i>
+    </div>
+  <% end %>
 
-      <% if current_user == @user %>
-        <div class="d-flex flex-column gap-2">
-          <%= link_to new_user_recipe_path(@user), class: "btn btn-light btn-round px-4 shadow-sm" do %>
-            <i class="fas fa-plus me-1"></i> Add Recipe
-          <% end %>
-          <%= link_to edit_user_path(@user), class: "btn btn-outline-light btn-round px-4" do %>
-            <i class="fas fa-user-pen me-1"></i> Edit Profile
-          <% end %>
-        </div>
+  <% if current_user == @user %>
+    <div class="mt-2 mb-1">
+      <%= link_to edit_user_path(@user), class: "text-cajun text-decoration-none small" do %>
+        <i class="fas fa-camera me-1"></i>Replace Image
       <% end %>
     </div>
-  </div>
+  <% end %>
+
+  <h4 class="fw-normal mt-2 mb-1"><%= @user.first %> <%= @user.last %></h4>
+
+  <% if @user.location.present? %>
+    <p class="text-muted small fw-semibold text-uppercase mb-2" style="letter-spacing: 1px;"><%= @user.location %></p>
+  <% end %>
+
+  <% if @user.bio.present? %>
+    <p class="text-muted mx-auto mb-3" style="max-width: 600px;"><%= @user.bio %></p>
+  <% end %>
+
+  <% if current_user == @user %>
+    <%= link_to new_user_recipe_path(@user), class: "btn btn-outline-primary btn-round px-4 mt-1" do %>
+      <i class="fas fa-gear me-1"></i> ADD RECIPE
+    <% end %>
+  <% end %>
 </div>
 
-<div class="bg-light py-5">
-  <div class="container">
-    <h4 class="fw-semibold mb-4">
-      <%= current_user == @user ? "My Recipes" : "#{@user.first}'s Recipes" %>
-      <span class="badge bg-primary ms-2 fw-normal"><%= @recipes.count %></span>
-    </h4>
+<%# Search bar %>
+<div class="container py-3" style="max-width: 700px;">
+  <%= form_with url: user_recipes_path(@user), method: :get, data: { turbo: false } do |f| %>
+    <div class="input-group">
+      <%= f.text_field :search, value: params[:search], placeholder: "Search",
+          class: "form-control border-end-0 bg-white" %>
+      <button class="btn border border-start-0 bg-white" type="submit">
+        <i class="fas fa-search text-cajun"></i>
+      </button>
+    </div>
+  <% end %>
+</div>
 
+<%# Recipe grid %>
+<div class="container py-3 pb-5">
+  <h3 class="text-cajun fw-normal text-center mb-4" style="font-size: 2rem;">
+    <%= current_user == @user ? "My Recipes" : "#{@user.first}'s Recipes" %>
+  </h3>
+
+  <% if @recipes.empty? %>
+    <div class="text-center py-5 text-muted">
+      <i class="fas fa-book-open fs-1 mb-3 d-block opacity-25"></i>
+      <p>No recipes yet.</p>
+      <% if current_user == @user %>
+        <%= link_to "Add your first recipe", new_user_recipe_path(@user), class: "btn btn-primary btn-round px-4" %>
+      <% end %>
+    </div>
+  <% else %>
     <div class="row g-4">
       <% @recipes.each do |recipe| %>
         <div class="col-lg-4 col-md-6">
-          <div class="card h-100 border-0 shadow-sm recipe-card">
-            <%= link_to user_recipe_path(@user, recipe), class: "text-decoration-none text-dark" do %>
+          <div class="featured-card text-center">
+            <%= link_to user_recipe_path(@user, recipe) do %>
               <% if recipe.image.attached? %>
-                <%= image_tag recipe.image, class: "card-img-top",
-                    style: "height: 200px; object-fit: cover;" %>
+                <%= image_tag recipe.image %>
               <% else %>
-                <div class="card-img-top bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center"
-                     style="height: 200px;">
-                  <i class="fas fa-utensils text-secondary fs-1"></i>
+                <div class="d-flex flex-column align-items-center justify-content-center bg-light"
+                     style="height: 220px; border-radius: 10px; border: 1px solid #e8e8e8; color: #bbb;">
+                  <i class="fas fa-camera-slash fs-1 mb-2"></i>
+                  <span class="small">No photo</span>
                 </div>
               <% end %>
-              <div class="card-body">
-                <h5 class="card-title fw-semibold mb-1"><%= recipe.name %></h5>
-                <p class="card-text text-muted small">
-                  <%= truncate(recipe.description, length: 90) %>
-                </p>
-              </div>
             <% end %>
-            <% if current_user == @user %>
-              <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
-                <%= link_to "Edit", edit_user_recipe_path(@user, recipe),
-                    class: "btn btn-outline-secondary btn-sm btn-round" %>
-                <%= button_to "Delete", user_recipe_path(@user, recipe), method: :delete,
-                    class: "btn btn-outline-danger btn-sm btn-round",
-                    data: { turbo_confirm: "Delete this recipe?" } %>
-              </div>
+            <%= link_to recipe.name, user_recipe_path(@user, recipe), class: "recipe-title d-block" %>
+            <% if recipe.description.present? %>
+              <p class="text-muted small mb-0"><%= truncate(recipe.description, length: 70) %></p>
             <% end %>
           </div>
         </div>
       <% end %>
     </div>
-
-    <% if @recipes.empty? %>
-      <div class="text-center py-5 text-muted">
-        <i class="fas fa-book-open fs-1 mb-3 d-block opacity-25"></i>
-        <p>No recipes yet.</p>
-        <% if current_user == @user %>
-          <%= link_to "Add your first recipe", new_user_recipe_path(@user),
-              class: "btn btn-primary btn-round px-4" %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+  <% end %>
 </div>
