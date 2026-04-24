@@ -55,7 +55,7 @@ import { CustomHttpInterceptor } from './core/http.interceptor';
             autoLogin: false,
             providers: [{
               id: FacebookLoginProvider.PROVIDER_ID,
-              provider: new FacebookLoginProvider('765683692014853')
+              provider: new FacebookLoginProvider('765683692014853', { scope: 'public_profile' })
             }],
             onError: (err: any) => {
               console.error(err);
